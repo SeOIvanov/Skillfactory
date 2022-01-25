@@ -1,0 +1,78 @@
+﻿#отрисовка поля битвы :)
+def show_square():
+    print("  1 2 3")
+    for i in range(len(square)):
+        print(i + 1,end=' ')
+        for j in range(len(square[i])):
+            print(square[i][j],end=" ")
+        print("")
+
+#очистка поля
+def clear_square():
+    for i in range(len(square)):
+        for j in range(len(square[i])):
+            square[i][j] = "-"
+
+#Ввод координат от игрока и проверка ошибок ввода
+def enter_move():
+    while True:
+        coordinates = input("Введите координаты:")
+        if len(coordinates.split()) != 2:
+            print("Неверно внесены координаты")
+            continue
+        x, y = coordinates.split()
+        if not (49 <= ord(x) <= 51) or not (49 <= ord(y) <= 51):
+            print("Неверно внесены координаты")
+            continue
+        x, y = int(x) - 1, int(y) - 1
+        if square[x][y] != " ":
+            print("Ячейка занята")
+            continue
+        return x, y
+
+#проверка на победу
+def check_win():
+    stroka = []
+    for i in range(len(square)):
+        if square[i] == ["X", "X", "X"] or square[i] == ["O", "O", "O"]:
+            return True
+    stroka = []
+    for i in range(len(square)):
+        stroka.append(square[i][i])
+        if stroka == ["X", "X", "X"] or stroka == ["O", "O", "O"]:
+            return True
+    stroka = []
+    for i in range(len(square)):
+        stroka.append(square[i][2 - i])
+        if stroka == ["X", "X", "X"] or stroka == ["O", "O", "O"]:
+            return True
+    stroka = []
+    for i in range(len(square)):
+        for j in range(len(square[i])):
+            stroka.append(square[j][i])
+        if stroka == ["X", "X", "X"] or stroka == ["O", "O", "O"]:
+            return True
+
+square = [[" "] * 3 for i in range(3)] #создание матрицы/поля
+count_move = 0
+clear_square() #очистка поля
+#старт игры
+while True:
+    count_move += 1
+#выбор крестика или нолика в зависимости от четности хода
+    if count_move % 2:
+        move_point = "X"
+    else:
+        move_point = "O"
+#получение координат от игрока
+    x, y = enter_move()
+#установка выбранного орудия в указанные координаты
+    square[x][y] = move_point
+#отрисовка поля с выставленным орудием
+    show_square()
+    if count_move == 9:
+        print("Игра окончена! Ничья")
+        break
+    if check_win():
+        print(f"Победили {move_point}")
+        break
